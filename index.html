@@ -8,6 +8,8 @@
 <meta property="og:title" content="Jack T. Beerman · Physical AI">
 <meta property="og:description" content="Neural networks that learn physics: G-PARC, D-PARC and adaptive discretization in physics-aware deep learning.">
 <meta property="og:type" content="website">
+<meta property="og:image" content="https://jackbeerman.github.io/headshot.jpg">
+<meta name="twitter:card" content="summary">
 <meta property="og:url" content="https://jackbeerman.github.io/">
 <link rel="canonical" href="https://jackbeerman.github.io/">
 <script type="application/ld+json">
@@ -17,6 +19,7 @@
   "name": "Jack T. Beerman",
   "url": "https://jackbeerman.github.io/",
   "jobTitle": "Machine learning researcher",
+  "image": "https://jackbeerman.github.io/headshot.jpg",
   "knowsAbout": ["Physical AI", "Physics-aware deep learning", "Graph neural networks", "Scientific machine learning", "Neural surrogates", "Computational fluid dynamics"],
   "alumniOf": [
     {"@type": "CollegeOrUniversity", "name": "University of Virginia"},
@@ -125,6 +128,8 @@ p { margin: 0; }
 .hero { padding-block: clamp(40px, 7vw, 88px) clamp(40px, 6vw, 72px); }
 .hero .wrap { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(32px, 5vw, 64px); align-items: center; }
 .hero-text { display: grid; gap: 22px; }
+.byline { display: flex; align-items: center; gap: 14px; }
+.avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; display: block; flex: none; border: 1px solid var(--line); background: var(--surface); }
 .hero h1 { font-weight: 800; font-size: clamp(2.7rem, 6.4vw, 4.6rem); line-height: 0.98; letter-spacing: -0.035em; }
 .thesis { font: 600 clamp(1.35rem, 2.5vw, 1.8rem)/1.2 var(--display); letter-spacing: -0.015em; text-wrap: balance; }
 .thesis em { font-style: normal; color: var(--accent); }
@@ -211,6 +216,8 @@ section { padding-block: clamp(56px, 8vw, 96px); border-top: 1px solid var(--lin
 /* about */
 .about { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: clamp(32px, 5vw, 64px); }
 .about-text { display: grid; gap: 16px; max-width: 62ch; }
+.portrait { width: 100%; max-width: 280px; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 4px; display: block; background: var(--surface); }
+.about-side { display: grid; gap: 28px; align-content: start; }
 .facts-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
 .facts-list li { display: grid; gap: 2px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
 .facts-list .k { font: 500 0.7rem/1.4 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
@@ -254,7 +261,10 @@ section { padding-block: clamp(56px, 8vw, 96px); border-top: 1px solid var(--lin
 <div class="hero">
   <div class="wrap">
     <div class="hero-text">
-      <p class="eyebrow">Physical AI · Physics-aware deep learning</p>
+      <div class="byline">
+        <img class="avatar" src="headshot.jpg" alt="" width="64" height="64">
+        <p class="eyebrow">Physical AI · Physics-aware deep learning</p>
+      </div>
       <h1>Jack T. Beerman</h1>
       <p class="thesis">I build neural networks that learn how the physical world <em>moves</em>.</p>
       <p class="lede">My models forecast shock waves, floods and deforming solids. They carry derivative operators and numerical time integrators inside the architecture, and they adapt their resolution to wherever the physics gets sharp.</p>
@@ -563,12 +573,15 @@ section { padding-block: clamp(56px, 8vw, 96px); border-top: 1px solid var(--lin
         <p>I completed my PhD in Data Science at the University of Virginia, advised by Stephen Baek, where I developed G-PARC and D-PARC. Before that I earned a BS and MS in Computer Science at Miami University. There I worked with Philippe Giabbanelli on agent-based simulation, GPU acceleration and machine learning for modeling human behavior.</p>
         <p>I'm interested in collaborating on neural surrogates, graph networks for simulation and physical AI more broadly. The fastest way to reach me is <a href="https://www.linkedin.com/in/jack-beerman/">LinkedIn</a> or <a href="https://github.com/JackBeerman">GitHub</a>.</p>
       </div>
-      <ul class="facts-list">
+      <div class="about-side">
+        <img class="portrait" src="headshot.jpg" alt="Portrait of Jack T. Beerman" width="280" height="280" loading="lazy">
+        <ul class="facts-list">
         <li><span class="k">PhD · Data Science</span><span class="v">University of Virginia</span><span class="s">Dissertation: Adaptive Discretization in Physics-Aware Deep Learning (2026)</span></li>
         <li><span class="k">MS · Computer Science</span><span class="v">Miami University</span><span class="s">Thesis: To Err Is Human: The Effect of Mistakes in Social Simulations</span></li>
         <li><span class="k">BS · Computer Science</span><span class="v">Miami University</span></li>
         <li><span class="k">Research areas</span><span class="v">Physics-aware deep learning · Graph neural networks · Scientific ML · Network science</span></li>
       </ul>
+      </div>
     </div>
   </div>
 </section>
