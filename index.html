@@ -1,0 +1,700 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jack T. Beerman</title>
+<meta name="description" content="Jack T. Beerman builds physics-aware neural networks: graph networks, deformable convolutions and adaptive discretization for physical AI.">
+<meta property="og:title" content="Jack T. Beerman · Physical AI">
+<meta property="og:description" content="Neural networks that learn physics: G-PARC, D-PARC and adaptive discretization in physics-aware deep learning.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jackbeerman.github.io/">
+<link rel="canonical" href="https://jackbeerman.github.io/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Jack T. Beerman",
+  "url": "https://jackbeerman.github.io/",
+  "jobTitle": "Machine learning researcher",
+  "knowsAbout": ["Physical AI", "Physics-aware deep learning", "Graph neural networks", "Scientific machine learning", "Neural surrogates", "Computational fluid dynamics"],
+  "alumniOf": [
+    {"@type": "CollegeOrUniversity", "name": "University of Virginia"},
+    {"@type": "CollegeOrUniversity", "name": "Miami University"}
+  ],
+  "sameAs": [
+    "https://scholar.google.com/citations?user=1EOWiikAAAAJ",
+    "https://github.com/JackBeerman",
+    "https://huggingface.co/jacktbeerman",
+    "https://www.linkedin.com/in/jack-beerman/"
+  ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Schibsted+Grotesk:wght@500;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+:root {
+  --bg: #F1F3F2;
+  --surface: #E5EAE8;
+  --ink: #0F1514;
+  --muted: #56615F;
+  --line: #CCD4D1;
+  --accent: #17756F;
+  --header-bg: rgba(241, 243, 242, 0.86);
+  --display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0C1110;
+    --surface: #151D1C;
+    --ink: #E4EBE9;
+    --muted: #92A09D;
+    --line: #25302E;
+    --accent: #45C6B5;
+    --header-bg: rgba(12, 17, 16, 0.86);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0C1110;
+  --surface: #151D1C;
+  --ink: #E4EBE9;
+  --muted: #92A09D;
+  --line: #25302E;
+  --accent: #45C6B5;
+  --header-bg: rgba(12, 17, 16, 0.86);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 1.0625rem/1.65 var(--body);
+  -webkit-font-smoothing: antialiased;
+}
+img, svg, canvas { max-width: 100%; }
+a { color: inherit; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: clamp(16px, 4vw, 40px); }
+
+/* ---------- header ---------- */
+.site-head {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+  background: var(--header-bg);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.site-head .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px; flex-wrap: wrap; }
+.mark { font: 700 1rem/1 var(--display); letter-spacing: -0.01em; text-decoration: none; }
+.site-nav { display: flex; gap: clamp(12px, 2.5vw, 28px); flex-wrap: wrap; }
+.site-nav a { font: 500 0.72rem/1 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); text-decoration: none; }
+.site-nav a:hover { color: var(--accent); }
+
+/* ---------- shared type ---------- */
+.eyebrow { font: 500 0.72rem/1.4 var(--mono); text-transform: uppercase; letter-spacing: 0.09em; color: var(--accent); margin: 0; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+h2 { font-weight: 700; font-size: clamp(1.8rem, 3.6vw, 2.6rem); line-height: 1.08; letter-spacing: -0.02em; }
+h3 { font-weight: 700; font-size: clamp(1.35rem, 2.4vw, 1.8rem); line-height: 1.15; letter-spacing: -0.015em; }
+p { margin: 0; }
+.muted { color: var(--muted); }
+
+.links { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn {
+  font: 500 0.76rem/1 var(--mono); letter-spacing: 0.02em;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 12px; border: 1px solid var(--line); border-radius: 3px;
+  text-decoration: none; color: var(--ink); background: transparent;
+  transition: border-color .15s, color .15s;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn .arr { color: var(--muted); }
+.btn:hover .arr { color: var(--accent); }
+.btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btn.primary .arr { color: var(--bg); opacity: .7; }
+.btn.primary:hover { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+
+/* ---------- hero ---------- */
+.hero { padding-block: clamp(40px, 7vw, 88px) clamp(40px, 6vw, 72px); }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(32px, 5vw, 64px); align-items: center; }
+.hero-text { display: grid; gap: 22px; }
+.hero h1 { font-weight: 800; font-size: clamp(2.7rem, 6.4vw, 4.6rem); line-height: 0.98; letter-spacing: -0.035em; }
+.thesis { font: 600 clamp(1.35rem, 2.5vw, 1.8rem)/1.2 var(--display); letter-spacing: -0.015em; text-wrap: balance; }
+.thesis em { font-style: normal; color: var(--accent); }
+.lede { color: var(--muted); max-width: 54ch; }
+.hero-fig { margin: 0; display: grid; gap: 10px; }
+.hero-fig canvas { display: block; width: 100%; aspect-ratio: 5 / 4; border-radius: 3px; background: #31688E; }
+.hero-fig figcaption { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font: 400 0.7rem/1.5 var(--mono); color: var(--muted); }
+.readout { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ---------- sections ---------- */
+section { padding-block: clamp(56px, 8vw, 96px); border-top: 1px solid var(--line); scroll-margin-top: 60px; }
+.sec-head { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 8fr); gap: 16px 48px; margin-bottom: clamp(32px, 5vw, 56px); align-items: start; }
+.sec-head .intro { color: var(--muted); max-width: 62ch; margin-top: 16px; }
+
+/* dissertation frame */
+.thesis-frame {
+  display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 8fr); gap: 16px 48px;
+  padding-block: 28px; border-block: 1px solid var(--line); margin-bottom: clamp(48px, 7vw, 80px);
+}
+.thesis-frame h3 { font-size: clamp(1.3rem, 2.2vw, 1.6rem); margin-top: 6px; }
+.thesis-frame .body { display: grid; gap: 18px; }
+.mechs { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.mechs li { display: grid; gap: 4px; align-content: start; padding-top: 12px; border-top: 2px solid var(--accent); }
+.mechs .k { font: 500 0.7rem/1.3 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.mechs .v { font: 600 1.02rem/1.3 var(--display); }
+.mechs .w { font-size: 0.92rem; color: var(--muted); line-height: 1.5; }
+
+/* featured works */
+.works { display: grid; gap: clamp(56px, 8vw, 88px); }
+.work { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(28px, 4vw, 56px); align-items: start; }
+.work-text { display: grid; gap: 18px; }
+.work-text p { max-width: 62ch; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin: 4px 0 0; }
+.facts div { display: grid; gap: 2px; align-content: start; }
+.facts dt { font: 700 1.55rem/1.1 var(--display); color: var(--accent); letter-spacing: -0.01em; }
+.facts dd { margin: 0; font-size: 0.9rem; line-height: 1.45; color: var(--muted); }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 20px; display: grid; gap: 14px; }
+.panel-label { font: 500 0.7rem/1.3 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.flow { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font: 400 0.8rem/1.4 var(--mono); }
+.flow li { display: grid; gap: 6px; }
+.flow .node { background: var(--bg); border: 1px solid var(--line); border-radius: 3px; padding: 9px 12px; }
+.flow .node b { font-weight: 500; color: var(--ink); }
+.flow .node span { color: var(--muted); }
+.flow .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.flow .down { color: var(--muted); text-align: center; line-height: 1; font-size: 0.8rem; }
+.flow .node.key { border-color: var(--accent); }
+.flow .loop { color: var(--accent); font-size: 0.72rem; text-align: right; }
+
+.kernels .grid-l { fill: none; stroke: var(--line); stroke-width: 1; }
+.kernels .cell { fill: none; stroke: var(--muted); stroke-width: 1; stroke-dasharray: 2 3; }
+.kernels .dot { fill: var(--ink); }
+.kernels .dot-a { fill: var(--accent); }
+.kernels .ghost { fill: none; stroke: var(--muted); stroke-width: 1; opacity: .6; }
+.kernels .off { stroke: var(--muted); stroke-width: 1; }
+.kernels .front { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; }
+.kernels text { font: 400 10.5px var(--mono); fill: var(--muted); }
+.panel .note { font-size: 0.86rem; line-height: 1.5; color: var(--muted); }
+
+.work.minor { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); padding-top: 32px; border-top: 1px dashed var(--line); }
+
+/* projects */
+.projects { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px 32px; }
+.project { display: grid; gap: 12px; align-content: start; padding-top: 16px; border-top: 1px solid var(--ink); }
+.project .tags { font: 500 0.68rem/1.4 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); }
+.project h3 { font-size: 1.25rem; }
+.project p { font-size: 0.97rem; color: var(--muted); }
+
+/* publications */
+.pub-group + .pub-group { margin-top: 48px; }
+.pub-group > h3 { font: 500 0.72rem/1.4 var(--mono); text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.pubs { list-style: none; margin: 0; padding: 0; }
+.pubs li { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 16px; padding-block: 18px; border-bottom: 1px solid var(--line); }
+.pubs .yr { font: 500 0.8rem/1.6 var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.pubs .t { font: 600 1.06rem/1.35 var(--display); letter-spacing: -0.005em; }
+.pubs .au { font-size: 0.92rem; color: var(--muted); margin-top: 4px; }
+.pubs .au b { color: var(--ink); font-weight: 600; }
+.pubs .ve { font-size: 0.92rem; font-style: italic; color: var(--muted); }
+.pubs .pl { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 8px; }
+.pubs .pl a { font: 500 0.74rem/1.4 var(--mono); color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; }
+.pubs .pl a:hover { border-bottom-color: var(--accent); }
+.badge { font: 500 0.66rem/1 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 6px; border: 1px solid var(--accent); color: var(--accent); border-radius: 2px; vertical-align: 2px; margin-left: 6px; white-space: nowrap; }
+
+/* about */
+.about { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: clamp(32px, 5vw, 64px); }
+.about-text { display: grid; gap: 16px; max-width: 62ch; }
+.facts-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
+.facts-list li { display: grid; gap: 2px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+.facts-list .k { font: 500 0.7rem/1.4 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.facts-list .v { font: 600 1rem/1.35 var(--display); }
+.facts-list .s { font-size: 0.9rem; color: var(--muted); }
+
+.site-foot { border-top: 1px solid var(--line); padding-block: 28px 40px; }
+.site-foot .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font: 400 0.72rem/1.5 var(--mono); color: var(--muted); }
+
+/* ---------- responsive ---------- */
+@media (max-width: 880px) {
+  .hero .wrap, .work, .work.minor, .about, .sec-head, .thesis-frame { grid-template-columns: minmax(0, 1fr); }
+  .projects { grid-template-columns: minmax(0, 1fr); }
+  .mechs { grid-template-columns: minmax(0, 1fr); }
+}
+@media (min-width: 881px) and (max-width: 1040px) {
+  .projects { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 480px) {
+  .pubs li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .flow .pair { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="mark" href="#top">Jack T. Beerman</a>
+    <nav class="site-nav" aria-label="Sections">
+      <a href="#research">Research</a>
+      <a href="#projects">Projects</a>
+      <a href="#publications">Publications</a>
+      <a href="#about">About</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+<div class="hero">
+  <div class="wrap">
+    <div class="hero-text">
+      <p class="eyebrow">Physical AI · Physics-aware deep learning</p>
+      <h1>Jack T. Beerman</h1>
+      <p class="thesis">I build neural networks that learn how the physical world <em>moves</em>.</p>
+      <p class="lede">My models forecast shock waves, floods and deforming solids. They carry derivative operators and numerical time integrators inside the architecture, and they adapt their resolution to wherever the physics gets sharp.</p>
+      <div class="links">
+        <a class="btn primary" href="#research">See the research <span class="arr">↓</span></a>
+        <a class="btn" href="https://github.com/JackBeerman">GitHub <span class="arr">↗</span></a>
+        <a class="btn" href="https://scholar.google.com/citations?user=1EOWiikAAAAJ&amp;hl=en">Google Scholar <span class="arr">↗</span></a>
+        <a class="btn" href="https://huggingface.co/jacktbeerman">Hugging Face <span class="arr">↗</span></a>
+        <a class="btn" href="https://www.linkedin.com/in/jack-beerman/">LinkedIn <span class="arr">↗</span></a>
+      </div>
+    </div>
+    <figure class="hero-fig">
+      <canvas id="field" role="img" aria-label="Animated illustration: two blast waves expanding across a triangular mesh, colored by pressure, with mesh cells subdividing along the shock fronts."></canvas>
+      <figcaption>
+        <span>Illustration: blast waves on an unstructured mesh, colored by pressure. Cells refine where the gradient is steep.</span>
+        <span class="readout" id="readout">t = 0.42</span>
+      </figcaption>
+    </figure>
+  </div>
+</div>
+
+<section id="research">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Research</p>
+      <div>
+        <h2>Physics-aware deep learning</h2>
+        <p class="intro">Numerical solvers are accurate and slow. Generic neural networks are fast, but they drift once a rollout runs long or leaves the training data. Physics-aware recurrent convolutional networks (PARC) split the work: a network learns the dynamics that are hard to write down, and explicit derivatives and time integrators handle the parts we already know.</p>
+      </div>
+    </div>
+
+    <div class="thesis-frame">
+      <div>
+        <p class="eyebrow">PhD dissertation · 2026</p>
+        <h3>Adaptive Discretization in Physics-Aware Deep Learning</h3>
+      </div>
+      <div class="body">
+        <p>Most physics-aware networks borrow off-the-shelf architectures with fixed grids and constant time steps, which break down in strongly nonlinear regimes. My dissertation builds adaptive discretization into the network itself, so it can change its spatial and temporal resolution as the solution evolves. The work moves from rigid Eulerian grids to hybrid Lagrangian–Eulerian refinement and then to fully unstructured domains.</p>
+        <ul class="mechs">
+          <li><span class="k">Space</span><span class="v">Deformable convolutions</span><span class="w">Kernels that follow advecting features such as shocks and reaction fronts.</span></li>
+          <li><span class="k">Time</span><span class="v">Variable time integration</span><span class="w">One trained model steps forward at irregular Δt.</span></li>
+          <li><span class="k">Geometry</span><span class="v">Graph networks</span><span class="w">Physics-aware learning on unstructured and moving meshes.</span></li>
+        </ul>
+        <div class="links">
+          <a class="btn" href="https://doi.org/10.18130/n35s-bc51">Read the dissertation <span class="arr">↗</span></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="works">
+
+      <article class="work">
+        <div class="work-text">
+          <p class="eyebrow">Scientific Reports · 2026 · First author</p>
+          <h3>G-PARC: physics-aware graph networks on unstructured meshes</h3>
+          <p>Convolutional PARC only runs on uniform Cartesian grids. G-PARC moves it onto graphs, so it works on the irregular meshes that engineering simulations actually use, including meshes that move as a structure deforms. Spatial derivatives come from moving least squares (MLS) kernels on the mesh stencil, and a numerical integrator advances the state.</p>
+          <dl class="facts">
+            <div><dt>604–2,382×</dt><dd>higher throughput than neural-operator baselines (GINO, GNO)</dd></div>
+            <div><dt>Any Δt</dt><dd>one trained model handles arbitrary timesteps at inference</dd></div>
+            <div><dt>3 domains</dt><dd>elastoplastic impact, planar shock waves, river flood forecasting</dd></div>
+          </dl>
+          <div class="links">
+            <a class="btn primary" href="https://www.nature.com/articles/s41598-026-59318-9">Paper <span class="arr">↗</span></a>
+            <a class="btn" href="https://arxiv.org/abs/2604.16533">arXiv <span class="arr">↗</span></a>
+            <a class="btn" href="https://github.com/JackBeerman/G-PARC">Code <span class="arr">↗</span></a>
+            <a class="btn" href="https://huggingface.co/jacktbeerman/Gparc">Weights &amp; data <span class="arr">↗</span></a>
+          </div>
+        </div>
+        <div class="panel" aria-label="G-PARC architecture">
+          <p class="panel-label">Architecture · differentiate, then integrate</p>
+          <ol class="flow">
+            <li><div class="node"><b>x(t)</b> <span>node and edge state on the mesh</span></div></li>
+            <li class="down" aria-hidden="true">↓</li>
+            <li class="pair">
+              <div class="node"><b>GATConv</b><br><span>learned features</span></div>
+              <div class="node key"><b>MLS operators</b><br><span>∇ · ∇² · strain</span></div>
+            </li>
+            <li class="down" aria-hidden="true">↓</li>
+            <li><div class="node"><b>SPADE + FiLM</b> <span>fuse physics, condition on Δt</span></div></li>
+            <li class="down" aria-hidden="true">↓</li>
+            <li><div class="node key"><b>∂x/∂t → RK4 · Heun · Euler</b></div></li>
+            <li class="down" aria-hidden="true">↓</li>
+            <li><div class="node"><b>x(t + Δt)</b></div><span class="loop">↺ repeat for each step of the rollout</span></li>
+          </ol>
+        </div>
+      </article>
+
+      <article class="work">
+        <div class="work-text">
+          <p class="eyebrow">arXiv preprint · 2026 · First author</p>
+          <h3>Size is not the solution: deformable convolutions for physics-aware deep learning</h3>
+          <p>In most of AI, harder problems get bigger models. For physics, scaling gives diminishing returns. D-PARC replaces the fixed 3×3 kernels in PARCv2's U-Net with deformable ones that learn a sampling offset at every pixel. Across Burgers' equation, Navier–Stokes and reactive flows, it beats a substantially larger PARCv2.</p>
+          <p>The learned kernels anti-cluster into an "active filtration" pattern. They concentrate on high-strain regions and coarsen elsewhere, much like adaptive mesh refinement in computational mechanics. The model learned this without being told to.</p>
+          <div class="links">
+            <a class="btn primary" href="https://arxiv.org/abs/2601.11657">arXiv <span class="arr">↗</span></a>
+            <a class="btn" href="https://github.com/JackBeerman/D-PARC">Code <span class="arr">↗</span></a>
+          </div>
+        </div>
+        <div class="panel">
+          <p class="panel-label">Sampling pattern · one 3×3 kernel</p>
+          <svg class="kernels" viewBox="0 0 360 230" role="img" aria-label="Left: a standard 3 by 3 kernel samples a fixed square. Right: a deformable kernel shifts its nine sample points toward a curved shock front.">
+            <rect class="grid-l" x="20" y="45" width="130" height="130" rx="2"></rect>
+            <g>
+              <circle class="dot" cx="45" cy="70" r="5"></circle><circle class="dot" cx="85" cy="70" r="5"></circle><circle class="dot" cx="125" cy="70" r="5"></circle>
+              <circle class="dot" cx="45" cy="110" r="5"></circle><circle class="dot" cx="85" cy="110" r="5"></circle><circle class="dot" cx="125" cy="110" r="5"></circle>
+              <circle class="dot" cx="45" cy="150" r="5"></circle><circle class="dot" cx="85" cy="150" r="5"></circle><circle class="dot" cx="125" cy="150" r="5"></circle>
+            </g>
+            <text x="20" y="205">standard: fixed square</text>
+
+            <rect class="grid-l" x="210" y="45" width="130" height="130" rx="2"></rect>
+            <path class="front" d="M258 28 C 246 78, 300 118, 272 192"></path>
+            <g>
+              <circle class="ghost" cx="235" cy="70" r="3.5"></circle><circle class="ghost" cx="275" cy="70" r="3.5"></circle><circle class="ghost" cx="315" cy="70" r="3.5"></circle><circle class="ghost" cx="235" cy="110" r="3.5"></circle><circle class="ghost" cx="275" cy="110" r="3.5"></circle><circle class="ghost" cx="315" cy="110" r="3.5"></circle><circle class="ghost" cx="235" cy="150" r="3.5"></circle><circle class="ghost" cx="275" cy="150" r="3.5"></circle><circle class="ghost" cx="315" cy="150" r="3.5"></circle>
+              <line class="off" x1="235" y1="70" x2="252" y2="56"></line><line class="off" x1="275" y1="70" x2="262" y2="84"></line><line class="off" x1="315" y1="70" x2="286" y2="78"></line>
+              <line class="off" x1="235" y1="110" x2="262" y2="100"></line><line class="off" x1="275" y1="110" x2="276" y2="112"></line><line class="off" x1="315" y1="110" x2="292" y2="124"></line>
+              <line class="off" x1="235" y1="150" x2="270" y2="150"></line><line class="off" x1="275" y1="150" x2="282" y2="140"></line><line class="off" x1="315" y1="150" x2="278" y2="176"></line>
+              <circle class="dot-a" cx="252" cy="56" r="5"></circle><circle class="dot-a" cx="262" cy="84" r="5"></circle><circle class="dot-a" cx="286" cy="78" r="5"></circle>
+              <circle class="dot-a" cx="262" cy="100" r="5"></circle><circle class="dot-a" cx="276" cy="112" r="5"></circle><circle class="dot-a" cx="292" cy="124" r="5"></circle>
+              <circle class="dot-a" cx="270" cy="150" r="5"></circle><circle class="dot-a" cx="282" cy="140" r="5"></circle><circle class="dot-a" cx="278" cy="176" r="5"></circle>
+            </g>
+            <text x="210" y="205">deformable: learned</text>
+            <text x="210" y="220">offsets follow the front</text>
+          </svg>
+          <p class="note">Each sample point moves by a learned (Δx, Δy) and is read by bilinear interpolation, so the receptive field bends toward shocks, vortices and reaction fronts.</p>
+        </div>
+      </article>
+
+      <article class="work minor">
+        <div class="work-text">
+          <p class="eyebrow">International Journal of Multiphase Flow · 2024 · Co-author</p>
+          <h3>PARC for multiphase compressible flows</h3>
+          <p>Physics-aware recurrent convolutions built around the advection–diffusion–reaction equation, applied to shocks interacting with particles and to reaction fronts. The benchmarks are Burgers' equation, flow past a cylinder and shock–particle interaction across Mach numbers.</p>
+        </div>
+        <div class="links" style="align-self: end;">
+          <a class="btn" href="https://doi.org/10.1016/j.ijmultiphaseflow.2024.104877">Paper <span class="arr">↗</span></a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Projects</p>
+      <div>
+        <h2>More neural network builds</h2>
+        <p class="intro">Open-source models and experiments beyond the dissertation, from probabilistic forecasting to reinforcement learning.</p>
+      </div>
+    </div>
+    <div class="projects">
+      <article class="project">
+        <p class="tags">GNN · Transformer · Probabilistic</p>
+        <h3>Vessel trajectory forecasting from irregular AIS</h3>
+        <p>Predicts where a ship will be as a distribution of plausible paths, using raw position reports at the irregular times they actually arrive. A heterogeneous graph network encodes nearby traffic and coastline, a time-aware causal transformer reads the history, and a sampling head trained with an energy-score loss draws many futures per pass. The design follows GraphCast and WeatherNext, and the repo includes an open benchmark.</p>
+        <div class="links"><a class="btn" href="https://github.com/JackBeerman/maritime">Code <span class="arr">↗</span></a></div>
+      </article>
+      <article class="project">
+        <p class="tags">LLM systems · Evaluation</p>
+        <h3>Fast classifiers inside an LLM pipeline</h3>
+        <p>Tests where a fast, cheap classification model earns its place in a real decision system. The classifier makes typed judgments in about 300 ms and triages roughly 10,000 prediction markets before any expensive LLM research runs. The measurements and findings are written up in the repo.</p>
+        <div class="links"><a class="btn" href="https://github.com/JackBeerman/swarm">Code <span class="arr">↗</span></a></div>
+      </article>
+      <article class="project">
+        <p class="tags">Reinforcement learning · PPO · SAC</p>
+        <h3>Autonomous racing with AWS DeepRacer</h3>
+        <p>Compared PPO and SAC for training a racing agent, then iterated on reward shaping. The best agent finished 53rd of 194 in the U.S. in the April 2024 race. Team project with Thomas Hammons, Conor McLaughlin and Luke Rohlwing.</p>
+        <div class="links"><a class="btn" href="https://github.com/JackBeerman/AWS_DeepRacer">Code <span class="arr">↗</span></a></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="publications">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Publications</p>
+      <div>
+        <h2>Papers</h2>
+        <p class="intro">Full list with citation counts on <a href="https://scholar.google.com/citations?user=1EOWiikAAAAJ&amp;hl=en">Google Scholar</a>.</p>
+      </div>
+    </div>
+
+    <div class="pub-group">
+      <h3>Physical AI and scientific machine learning</h3>
+      <ul class="pubs">
+        <li>
+          <span class="yr">2026</span>
+          <div>
+            <p class="t">Adaptive Discretization in Physics-Aware Deep Learning <span class="badge">PhD dissertation</span></p>
+            <p class="au"><b>J. T. Beerman</b>. Advisor: S. Baek.</p>
+            <p class="ve">School of Data Science, University of Virginia</p>
+            <p class="pl"><a href="https://doi.org/10.18130/n35s-bc51">Dissertation</a></p>
+          </div>
+        </li>
+        <li>
+          <span class="yr">2026</span>
+          <div>
+            <p class="t">G-PARC: Graph-Physics Aware Recurrent Convolutional neural networks for spatiotemporal dynamics on unstructured meshes</p>
+            <p class="au"><b>J. T. Beerman</b>, T. J. Abele, M. Taghizadeh, A. Davis, Z. J. Gray, N. Alemazkoor, et al.</p>
+            <p class="ve">Scientific Reports</p>
+            <p class="pl"><a href="https://www.nature.com/articles/s41598-026-59318-9">Paper</a><a href="https://arxiv.org/abs/2604.16533">arXiv</a><a href="https://github.com/JackBeerman/G-PARC">Code</a><a href="https://huggingface.co/jacktbeerman/Gparc">Weights</a></p>
+          </div>
+        </li>
+        <li>
+          <span class="yr">2026</span>
+          <div>
+            <p class="t">Size is Not the Solution: Deformable Convolutions for Effective Physics Aware Deep Learning</p>
+            <p class="au"><b>J. T. Beerman</b>, S. Roy, H. S. Udaykumar, S. S. Baek</p>
+            <p class="ve">arXiv:2601.11657</p>
+            <p class="pl"><a href="https://arxiv.org/abs/2601.11657">arXiv</a><a href="https://github.com/JackBeerman/D-PARC">Code</a></p>
+          </div>
+        </li>
+        <li>
+          <span class="yr">2024</span>
+          <div>
+            <p class="t">Physics-aware recurrent convolutional neural networks for modeling multiphase compressible flows</p>
+            <p class="au">X. Cheng, P. C. H. Nguyen, P. K. Seshadri, M. Verma, Z. J. Gray, <b>J. T. Beerman</b>, H. S. Udaykumar, S. S. Baek</p>
+            <p class="ve">International Journal of Multiphase Flow, vol. 177</p>
+            <p class="pl"><a href="https://doi.org/10.1016/j.ijmultiphaseflow.2024.104877">Paper</a></p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="pub-group">
+      <h3>Simulation, agent-based modeling and security</h3>
+      <ul class="pubs">
+        <li>
+          <span class="yr">2024</span>
+          <div>
+            <p class="t">Accelerating Hybrid Agent-Based Models and Fuzzy Cognitive Maps: How to Combine Agents who Think Alike?</p>
+            <p class="au">P. J. Giabbanelli, <b>J. T. Beerman</b></p>
+            <p class="ve">Winter Simulation Conference (WSC)</p>
+            <p class="pl"><a href="https://arxiv.org/abs/2409.00824">arXiv</a></p>
+          </div>
+        </li>
+        <li>
+          <span class="yr">2023</span>
+          <div>
+            <p class="t">A Review of Colonial Pipeline Ransomware Attack <span class="badge">Most cited</span></p>
+            <p class="au"><b>J. Beerman</b>, D. Berent, Z. Falter, S. Bhunia</p>
+            <p class="ve">IEEE/ACM CCGrid Workshops (CCGridW)</p>
+            <p class="pl"><a href="https://doi.org/10.1109/CCGridW59191.2023.00017">Paper</a></p>
+          </div>
+        </li>
+        <li>
+          <span class="yr">2023</span>
+          <div>
+            <p class="t">A framework for the comparison of errors in agent-based models using machine learning</p>
+            <p class="au"><b>J. T. Beerman</b>, G. G. Beaumont, P. J. Giabbanelli</p>
+            <p class="ve">Journal of Computational Science, vol. 72</p>
+            <p class="pl"><a href="https://www.sciencedirect.com/science/article/abs/pii/S1877750323001795">Paper</a></p>
+          </div>
+        </li>
+        <li>
+          <span class="yr">2023</span>
+          <div>
+            <p class="t">On the Necessity of Human Decision-Making Errors to Explain Vaccination Rates for Covid-19: An Agent-Based Modeling Study</p>
+            <p class="au"><b>J. T. Beerman</b>, G. G. Beaumont, P. J. Giabbanelli</p>
+            <p class="ve">Annual Modeling and Simulation Conference (ANNSIM)</p>
+            <p class="pl"><a href="https://ieeexplore.ieee.org/document/10155377">Paper</a></p>
+          </div>
+        </li>
+        <li>
+          <span class="yr">2023</span>
+          <div>
+            <p class="t">Accelerating Agent-Based Models and Fuzzy Cognitive Maps via CUDA</p>
+            <p class="au">K. Ghumrawi, K. Ha, <b>J. Beerman</b>, J. D. Rudie, P. J. Giabbanelli</p>
+            <p class="ve">Hawaii International Conference on System Sciences (HICSS)</p>
+            <p class="pl"><a href="https://scholarspace.manoa.hawaii.edu/server/api/core/bitstreams/05bca61f-8f9d-4b43-aff4-d173243165d4/content">Paper</a></p>
+          </div>
+        </li>
+        <li>
+          <span class="yr">2023</span>
+          <div>
+            <p class="t">To Err Is Human: The Effect of Mistakes in Social Simulations <span class="badge">MS thesis</span></p>
+            <p class="au"><b>J. T. Beerman</b></p>
+            <p class="ve">Miami University</p>
+          </div>
+        </li>
+        <li>
+          <span class="yr">2022</span>
+          <div>
+            <p class="t">A Scoping Review of Three Dimensions for Long-Term COVID-19 Vaccination Models: Hybrid Immunity, Individual Drivers of Vaccinal Choice, and Human Errors</p>
+            <p class="au"><b>J. T. Beerman</b>, G. G. Beaumont, P. J. Giabbanelli</p>
+            <p class="ve">Vaccines, 10(10), 1716</p>
+            <p class="pl"><a href="https://www.mdpi.com/2076-393X/10/10/1716">Paper</a></p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">About</p>
+      <h2>Machine learning for physical systems</h2>
+    </div>
+    <div class="about">
+      <div class="about-text">
+        <p>I'm a machine learning researcher working on physical AI: neural networks that model how physical systems evolve in space and time. I focus on the architecture itself. That means deciding where the network should look, how it should step through time, and what geometry it should run on, so it stays accurate where the physics is hardest.</p>
+        <p>I completed my PhD in Data Science at the University of Virginia, advised by Stephen Baek, where I developed G-PARC and D-PARC. Before that I earned a BS and MS in Computer Science at Miami University. There I worked with Philippe Giabbanelli on agent-based simulation, GPU acceleration and machine learning for modeling human behavior.</p>
+        <p>I'm interested in collaborating on neural surrogates, graph networks for simulation and physical AI more broadly. The fastest way to reach me is <a href="https://www.linkedin.com/in/jack-beerman/">LinkedIn</a> or <a href="https://github.com/JackBeerman">GitHub</a>.</p>
+        <!-- To add email: <p>Email: <a href="mailto:you@example.com">you@example.com</a></p> -->
+      </div>
+      <ul class="facts-list">
+        <li><span class="k">PhD · Data Science</span><span class="v">University of Virginia</span><span class="s">Dissertation: Adaptive Discretization in Physics-Aware Deep Learning (2026)</span></li>
+        <li><span class="k">MS · Computer Science</span><span class="v">Miami University</span><span class="s">Thesis: To Err Is Human: The Effect of Mistakes in Social Simulations</span></li>
+        <li><span class="k">BS · Computer Science</span><span class="v">Miami University</span></li>
+        <li><span class="k">Research areas</span><span class="v">Physics-aware deep learning · Graph neural networks · Scientific ML · Network science</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <span>© 2026 Jack T. Beerman</span>
+    <span>
+      <a href="https://github.com/JackBeerman">GitHub</a> ·
+      <a href="https://scholar.google.com/citations?user=1EOWiikAAAAJ&amp;hl=en">Scholar</a> ·
+      <a href="https://huggingface.co/jacktbeerman">Hugging Face</a> ·
+      <a href="https://www.linkedin.com/in/jack-beerman/">LinkedIn</a>
+    </span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var cv = document.getElementById('field');
+  if (!cv || !cv.getContext) return;
+  var ctx = cv.getContext('2d');
+  var readout = document.getElementById('readout');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // viridis colormap stops
+  var VIR = [[68,1,84],[72,40,120],[62,73,137],[49,104,142],[38,130,142],[31,158,137],[53,183,121],[109,205,89],[180,222,44],[253,231,37]];
+  function viridis(v) {
+    v = Math.max(0, Math.min(1, v)) * (VIR.length - 1);
+    var i = Math.min(VIR.length - 2, Math.floor(v)), f = v - i, a = VIR[i], b = VIR[i + 1];
+    return 'rgb(' + ((a[0] + (b[0] - a[0]) * f) | 0) + ',' + ((a[1] + (b[1] - a[1]) * f) | 0) + ',' + ((a[2] + (b[2] - a[2]) * f) | 0) + ')';
+  }
+
+  // seeded RNG so the mesh is the same on every load
+  function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+  var W = 0, H = 0, dpr = 1, tris = [];
+  var SOURCES = [{ x: 0.26, y: 0.36, phase: 0.0 }, { x: 0.74, y: 0.70, phase: 0.5 }];
+
+  function field(x, y, t) {
+    var u = x / W, v = y / H, asp = H / W, val = 0.07 + 0.04 * Math.sin(u * 5.5 + v * 3.1);
+    for (var s = 0; s < SOURCES.length; s++) {
+      var S = SOURCES[s];
+      var ph = ((t - S.phase) % 1 + 1) % 1;
+      var R = 0.04 + ph * 0.95;
+      var d = Math.sqrt((u - S.x) * (u - S.x) + (v - S.y) * (v - S.y) * asp * asp);
+      var behind = R - d;
+      if (behind >= 0) val += 0.92 * Math.pow(1 - ph, 1.15) * Math.exp(-behind * 6.5);
+    }
+    return Math.min(1, val);
+  }
+
+  function build() {
+    var r = cv.getBoundingClientRect();
+    dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = Math.max(1, Math.round(r.width * dpr));
+    H = Math.max(1, Math.round(r.height * dpr));
+    cv.width = W; cv.height = H;
+    var rand = rng(7), cols = 16, dx = W / cols, rows = Math.max(2, Math.round(H / dx)), dy = H / rows, pts = [];
+    for (var i = 0; i <= rows; i++) {
+      pts.push([]);
+      for (var j = 0; j <= cols; j++) {
+        var jx = (j === 0 || j === cols) ? 0 : (rand() - 0.5) * 0.62 * dx;
+        var jy = (i === 0 || i === rows) ? 0 : (rand() - 0.5) * 0.62 * dy;
+        pts[i].push([j * dx + jx, i * dy + jy]);
+      }
+    }
+    tris = [];
+    for (i = 0; i < rows; i++) for (j = 0; j < cols; j++) {
+      var a = pts[i][j], b = pts[i][j + 1], c = pts[i + 1][j], d = pts[i + 1][j + 1];
+      if ((i + j) % 2) { tris.push([a, b, d], [a, d, c]); } else { tris.push([a, b, c], [b, d, c]); }
+    }
+  }
+
+  var cells = 0;
+  function drawTri(a, b, c, t, depth) {
+    var fa = field(a[0], a[1], t), fb = field(b[0], b[1], t), fc = field(c[0], c[1], t);
+    var spread = Math.max(fa, fb, fc) - Math.min(fa, fb, fc);
+    if (depth < 3 && spread > 0.16) {
+      var ab = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], bc = [(b[0] + c[0]) / 2, (b[1] + c[1]) / 2], ca = [(c[0] + a[0]) / 2, (c[1] + a[1]) / 2];
+      drawTri(a, ab, ca, t, depth + 1); drawTri(ab, b, bc, t, depth + 1);
+      drawTri(ca, bc, c, t, depth + 1); drawTri(ab, bc, ca, t, depth + 1);
+      return;
+    }
+    cells++;
+    ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.lineTo(c[0], c[1]); ctx.closePath();
+    ctx.fillStyle = viridis(field((a[0] + b[0] + c[0]) / 3, (a[1] + b[1] + c[1]) / 3, t));
+    ctx.fill(); ctx.stroke();
+  }
+
+  function draw(t) {
+    if (!W || !H) return;
+    cells = 0;
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = 0.6 * dpr;
+    ctx.strokeStyle = 'rgba(255,255,255,0.20)';
+    for (var k = 0; k < tris.length; k++) drawTri(tris[k][0], tris[k][1], tris[k][2], t, 0);
+    if (readout) readout.textContent = 't = ' + t.toFixed(2) + ' · ' + cells.toLocaleString('en-US') + ' cells';
+  }
+
+  var PERIOD = 7000, t0 = null, running = false, visible = true, raf = 0;
+  var tStatic = 0.42, lastT = tStatic;
+  function frame(now) {
+    if (t0 === null) t0 = now - lastT * PERIOD;
+    lastT = ((now - t0) % PERIOD) / PERIOD;
+    draw(lastT);
+    raf = requestAnimationFrame(frame);
+  }
+  function start() { if (!running && !reduce && visible) { running = true; t0 = null; raf = requestAnimationFrame(frame); } }
+  function stop() { if (running) { running = false; cancelAnimationFrame(raf); } }
+
+  build(); draw(tStatic);
+
+  if ('ResizeObserver' in window) {
+    new ResizeObserver(function () { build(); if (!running) draw(lastT); }).observe(cv);
+  }
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) {
+      visible = es[0].isIntersecting;
+      if (visible) start(); else stop();
+    }).observe(cv);
+  } else { start(); }
+  document.addEventListener('visibilitychange', function () { if (document.hidden) stop(); else start(); });
+})();
+</script>
+</body>
+</html>
