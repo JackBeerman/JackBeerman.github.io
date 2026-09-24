@@ -31,5 +31,4 @@ Personal research site. One static page (`index.html`) with no build step.
 
 - **New paper:** copy an `<li>` in the Publications section.
 - **New project:** copy an `<article class="project">` block.
-- **Email:** uncomment the email line in the About section.
 - **Colors:** tokens are at the top of the `<style>` block (light theme, then dark).
